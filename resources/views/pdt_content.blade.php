@@ -48,7 +48,7 @@
     <button class="weui_btn weui_btn_primary" onclick="_addCart();">加入购物车</button>
   </div>
   <div class="bk_half_area">
-    <button class="weui_btn weui_btn_default" onclick="_toCart()">查看购物车(<span id="cart_num" class="m3_price"></span>)</button>
+    <button class="weui_btn weui_btn_default" onclick="_toCart()">查看购物车(<span id="cart_num" class="m3_price">{{$count}}</span>)</button>
   </div>
 </div>
 @endsection
@@ -59,18 +59,57 @@
 <script type="text/javascript">
     $('.bk_content').html(document.title);
     
-  var bullets = document.getElementById('position').getElementsByTagName('li');
-  Swipe(document.getElementById('mySwipe'), {
-    auto: 2000,
-    continuous: true,
-    disableScroll: false,
-    callback: function(pos) {
-      var i = bullets.length;
-      while (i--) {
-        bullets[i].className = '';
+    var bullets = document.getElementById('position').getElementsByTagName('li');
+    Swipe(document.getElementById('mySwipe'), {
+      auto: 2000,
+      continuous: true,
+      disableScroll: false,
+      callback: function(pos) {
+        var i = bullets.length;
+        while (i--) {
+          bullets[i].className = '';
+        }
+        bullets[pos].className = 'cur';
       }
-      bullets[pos].className = 'cur';
+    });
+    
+    function _addCart(){
+        var product_id="{{$product->id}}"
+        $.ajax({
+            type: "get",
+            url: '/service/category/car/'+product_id,
+            dataType: 'json',
+            cache: false,
+            success: function(data) {
+               if(data == null) {
+                 $('.bk_toptips').show();
+                 $('.bk_toptips span').html('服务端错误');
+                 setTimeout(function() {$('.bk_toptips').hide();}, 2000);
+                 return;
+               }
+               if(data.status != 0) {
+                 $('.bk_toptips').show();
+                 $('.bk_toptips span').html(data.message);
+                 setTimeout(function() {$('.bk_toptips').hide();}, 2000);
+                 return;
+               }else if(data.status == 0){
+                   var num=$('#cart_num').html();
+//                    if(num=='') num=0;
+                    num=$('#cart_num').html(Number(num)+1);
+                    $('.bk_toptips').show();
+                    $('.bk_toptips span').html('添加成功');
+                    setTimeout(function() {$('.bk_toptips').hide();}, 2000);
+                    
+//                    location.href="/category";
+                }
+             },
+             error: function(xhr, status, error) {
+               console.log(xhr);
+               console.log(status);
+               console.log(error);
+             }
+           });
     }
-  });
+  
 </script>
 @endsection

@@ -43,4 +43,6 @@ Route::group(['prefix'=>'service'],function(){
     Route::post('login', 'Service\MemberController@login');
     //首页二级分类显示 前->后
     Route::get('category/parent_id/{parent_id}', 'Service\CategoryController@twoCategory');
+    //CarConreoller  购物车
+    Route::get('category/car/{car_id}', 'Service\CarController@toCar');
 });
