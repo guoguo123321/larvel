@@ -21,10 +21,10 @@ class ProductController extends Controller
         $pdt_content=PatContent::where('product_id',$parent_id)->first();
         $pdt_images=PdtImages::where('product_id',$parent_id)->get();
         
+        //保存购物车里面的值
         $bk_car=$request->cookie('bk_car');//假设用cookie 获取的值是1：1，2：1
-//        return $bk_car;
         $bk_car_arr=($bk_car!=null?explode(',', $bk_car):array());//explode遇到，把字符串拆分成数组
-         $count=0;
+        $count=0;
         foreach ($bk_car_arr as $value){//这里是值引用
             $index=strpos($value, ':');
             $first=substr($value, 0, $index);
